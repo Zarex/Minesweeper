@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+	<head>
+		
+		<title>Minesweeper</title>
+		
+		<style type="text/css">
+			
+			.hidden
+			{
+			background-image:url(images/hidden.png);
+			}
+			
+			.number
+			{
+			color:red;
+			font-size:30px;
+			}
+			
+			.flag
+			{
+			background-image:url(images/flag.png);
+			}
+			
+			.mine
+			{
+			background-image:url(images/mine.png);
+			}
+			
+		</style>
+		
+		<script type="text/javascript" src="wrapper.js"></script>
+		<script type="text/javascript" src="minesweeper.js"></script>
+		
+	</head>
+	
+	<body>
+		
+		<table id="game"></table>
+	
+		<script type="text/javascript">
+			
+			var width = prompt("Width?");
+			var height = prompt("Height?");
+			var board = Board(width, height);
+			var mines = prompt("Number of mines?");
+			var mineLocs = mineLocGen(width * height, mines);
+			board = placeMines(board, mineLocs);
+			
+		</script>
+	
+	</body>
+	
+</html>

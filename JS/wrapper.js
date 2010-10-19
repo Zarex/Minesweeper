@@ -1,4 +1,5 @@
 // Wrapping browser incompatibilities.
+
 function addEvent(object, event, effect) {
 	if (typeof object == "string") {object = $(object);}
 	if (object.addEventListener) {
@@ -52,4 +53,63 @@ function getCookie(cookie_name) {
 		}
 	}
 	return "";
+}
+
+// max is exclusive
+function randInt(max) {
+	
+	return parseInt(Math.random() * max);
+
+}
+
+// Functional programming tools, courtesy of examples at eloquentjavascript.net
+
+function forEach(array, action) {
+
+	for (var i = 0; i < array.length; i++) {
+		
+		action(array[i]);
+		
+	}
+
+}
+
+function map(func, array) {
+
+	var result = [];
+	
+	forEach(array, function (element) {
+	
+		result.push(func(element));
+		
+	});
+	
+	return result;
+	
+}
+
+function asArray(quasiArray, start) {
+
+	var result = [];
+	
+	for (var i = (start || 0); i < quasiArray.length; i++) {
+	
+		result.push(quasiArray[i]);
+		
+	}
+	
+	return result;
+	
+}
+
+function partial(func) {
+
+	var fixedArgs = asArray(arguments, 1);
+	
+	return function() {
+	
+		return func.apply(null, fixedArgs.concat(asArray(arguments)));
+		
+	};
+	
 }

@@ -21,18 +21,23 @@ function Board(width, height) {
 function Cell (mine, loc, revealed)
 {
 	this.mine = mine;
+	
 	this.revealed = revealed;
 	if(this.revealed === undefined)
 		this.revealed = false;
+		
 	this.loc = [parseInt(loc/width), loc % width];
-	var tempLoc= [this.loc[0],this.loc[1]];
+	
+	var tempLoc = [this.loc[0],this.loc[1]];
 	this.surroundings = function (){
 		var surroundingCells = [];
 		for(var i = -1; i < 2; i++)
 		{
 			for(var j = -1; j < 2; j++)
 			{
-			
+				
+				/* This could probably be cleaner. */
+				// Skip spaces that aren't on the board.
 				try {
 					var cell = board[tempLoc[0]+i][tempLoc[1]+j];
 				}
@@ -41,7 +46,10 @@ function Cell (mine, loc, revealed)
 					continue;
 				}
 				
-				if (cell === undefined || cell.loc[0] == tempLoc[0] && cell.loc[1] == tempLoc[1]) continue;
+				// Don't include yourself or spaces off the board.
+				if (cell === undefined ||
+					cell.loc[0] == tempLoc[0] && cell.loc[1] == tempLoc[1]) continue;
+				
 				surroundingCells.push(cell);
 					
 			}
@@ -51,18 +59,9 @@ function Cell (mine, loc, revealed)
 	
 }
 
-
-
-// max for randInt is exclusive
-function randInt(max) {
-	
-	return parseInt(Math.random() * max);
-
-}
-
 function mineLocGen(area, mines)
 {
-// BEWARE: if mines > area, infinite loops may occur
+// BEWARE: if mines > area, infinite loops will occur.
 	mineLocs = [];
 	for(var i = 0; i < mines; i++)
 	{
@@ -74,55 +73,7 @@ function mineLocGen(area, mines)
 	return mineLocs;
 }
 
-function forEach(array, action) {
 
-	for (var i = 0; i < array.length; i++) {
-		
-		action(array[i]);
-		
-	}
-
-}
-
-function map(func, array) {
-
-	var result = [];
-	
-	forEach(array, function (element) {
-	
-		result.push(func(element));
-		
-	});
-	
-	return result;
-	
-}
-
-function asArray(quasiArray, start) {
-
-	var result = [];
-	
-	for (var i = (start || 0); i < quasiArray.length; i++) {
-	
-		result.push(quasiArray[i]);
-		
-	}
-	
-	return result;
-	
-}
-
-function partial(func) {
-
-	var fixedArgs = asArray(arguments, 1);
-	
-	return function() {
-	
-		return func.apply(null, fixedArgs.concat(asArray(arguments)));
-		
-	};
-	
-}
 
 function placeMines(board, mineLocs) {
 
@@ -131,7 +82,8 @@ function placeMines(board, mineLocs) {
 	return map(partial(map, function() {
 			
 		element++;
-	
+		
+		// If mineLocs says there should be a mine here, put one here.
 		if (mineLocs.indexOf(element) != -1) {
 				
 				return new Cell(true,element);

@@ -44,11 +44,11 @@
 			
 			var width = prompt("Width?");
 			var height = prompt("Height?");
-			var board = new Board(width, height);
+			var game = new Game(width, height);
 			var mines = prompt("Number of mines?");
 			var mineLocs = mineLocGen(width * height, mines);
-			board.board = placeMines(board.board, mineLocs);
-			board.surroundings(board.cellAt(0, 0));
+			game.board = placeMines(game, mineLocs);
+			game.cellAt(0, 0).getSurroundings();
 			
 		</script>
 	

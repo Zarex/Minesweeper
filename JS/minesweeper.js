@@ -1,4 +1,4 @@
-function Board(width, height) {
+function Game(width, height) {
 	
 	var tempBoard = this; // Many methods need access to this inside themselves.
 	 
@@ -15,38 +15,46 @@ function Board(width, height) {
 		}
 	
 	}
-	this.contains= function (loc0, loc1)
-	{
+	this.contains= function (loc0, loc1) {
+	
 		if(tempBoard.board[loc0] === undefined)
 			return false;
+			
 		if(tempBoard.board[loc0][loc1] === undefined)
 			return false;
+			
 		return true;
+		
 	};
 	
 	this.cellAt = function(loc0, loc1) {
 		
-		if (tempBoard.contains(loc0, loc1)) {
-			
+		if (tempBoard.contains(loc0, loc1))
 			return tempBoard.board[loc0][loc1];
-			
-		}
 		
 		return false;
 		
 	}
 	
 	
-	this.surroundings = function (center_cell){
 	
+}
+
+function Cell (mine, loc, game, revealed)
+{
+	var tempCell = this;
+	
+	this.mine = mine;
+	
+	this.getSurroundings = function (){
+
 		var surroundingCells = [];
 		
 		for(var i = -1; i < 2; i++)
 		{
 			for(var j = -1; j < 2; j++)
 			{	
-				new_cell = tempBoard.cellAt(center_cell.loc[0] + i,
-											center_cell.loc[1] + j);
+				new_cell = game.cellAt(tempCell.loc[0] + i, tempCell.loc[1] + j);
 				
 				// Don't include spaces off the board or yourself.
 				if (!(new_cell) || i == 0 && j == 0) continue;
@@ -56,21 +64,27 @@ function Board(width, height) {
 			}
 			
 		}
-		
+	
 		return surroundingCells;
+	
+	};
+	
+	this.nearbyMines = function() {
+		
+		return reduce(function(base, cell) {
+		
+			if (cell.mine) return base + 1;
+			return base;
+		
+		}, 0, tempCell.getSurroundings());
 		
 	};
 	
-}
-
-function Cell (mine, loc, revealed)
-{
-	this.mine = mine;
-	
 	this.revealed = revealed;
-	if(this.revealed === undefined)
+	if(this.revealed === undefined) // Default value for revealed.
 		this.revealed = false;
 		
+	// Converts an int corresponding to a cell of the board's area to coordinates.
 	this.loc = [parseInt(loc/width), loc % width];
 	
 }
@@ -91,7 +105,7 @@ function mineLocGen(area, mines)
 
 
 
-function placeMines(board, mineLocs) {
+function placeMines(game, mineLocs) {
 
 	var element = -1;
 
@@ -102,15 +116,15 @@ function placeMines(board, mineLocs) {
 		// If mineLocs says there should be a mine here, put one here.
 		if (mineLocs.indexOf(element) != -1) {
 				
-				return new Cell(true,element);
+				return new Cell(true, element, game);
 			
 			}
 			
 			else {
 				
-				return new Cell(false, element);
+				return new Cell(false, element, game);
 			
 			}
-	}), board);
+	}), game.board);
 
 }

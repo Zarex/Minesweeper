@@ -88,6 +88,18 @@ function map(func, array) {
 	
 }
 
+function reduce(combine, base, array) {
+
+	forEach(array, function (element) {
+	
+		base = combine(base, element);
+		
+	});
+	
+	return base;
+	
+}
+
 function asArray(quasiArray, start) {
 
 	var result = [];

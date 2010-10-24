@@ -29,6 +29,13 @@
 			background-image:url(images/mine.png);
 			}
 			
+			td
+			{
+			text-align:center;
+			width:40px;
+			height:40px;
+			}
+			
 		</style>
 		
 		<script type="text/javascript" src="js/wrapper.js"></script>
@@ -48,7 +55,39 @@
 			var mines = prompt("Number of mines?");
 			var mineLocs = mineLocGen(width * height, mines);
 			game.board = placeMines(game, mineLocs);
-			game.cellAt(0, 0).getSurroundings();
+			game.flip(game.cellAt(0, 0));
+			
+			forEach(game.board, function(boardRow){
+			
+				$("game").insertRow();
+				forEach(boardRow, function(cell) {
+					
+					// insert prepends to lists, so first element is newest.
+					var currentRow = $("game").rows[0];
+					currentRow.insertCell();
+					var currentCell = currentRow.cells[0];
+					
+					if (!(cell.revealed)) {
+					
+						if (cell.flag) currentCell.className = "flag";
+						else currentCell.className = "hidden";
+						
+					}
+					else {
+					
+						if (cell.mine) currentCell.className = "mine";
+						else {
+						
+							currentCell.className = "number";
+							currentCell.innerHTML = cell.nearbyMines();
+							
+						}
+						
+					}
+					
+				});
+				
+			});
 			
 		</script>
 	

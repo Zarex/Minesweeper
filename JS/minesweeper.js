@@ -15,6 +15,7 @@ function Game(width, height) {
 		}
 	
 	}
+	
 	this.contains= function (loc0, loc1) {
 	
 		if(tempBoard.board[loc0] === undefined)
@@ -34,9 +35,13 @@ function Game(width, height) {
 		
 		return false;
 		
+	};
+	
+	this.flip = function(cell) {
+	
+		cell.revealed = !(cell.revealed);
+	
 	}
-	
-	
 	
 }
 

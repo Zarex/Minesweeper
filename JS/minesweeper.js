@@ -16,7 +16,7 @@ function Game(width, height) {
 	
 	}
 	
-	this.contains= function (loc0, loc1) {
+	this.contains= function(loc0, loc1) {
 	
 		if(tempBoard.board[loc0] === undefined)
 			return false;
@@ -43,9 +43,16 @@ function Game(width, height) {
 	
 	}
 	
+	this.each = function(func) {
+
+		return map(partial(map, func), tempBoard.board);
+
+	}
+
+	
 }
 
-function Cell (mine, loc, game, revealed)
+function Cell(mine, loc, game, revealed)
 {
 	var tempCell = this;
 	
@@ -96,7 +103,7 @@ function Cell (mine, loc, game, revealed)
 
 function mineLocGen(area, mines)
 {
-// BEWARE: if mines > area, infinite loops will occur.
+// BEWARE: if mines > area, infinite loops may occur.
 	mineLocs = [];
 	for(var i = 0; i < mines; i++)
 	{
@@ -114,22 +121,17 @@ function placeMines(game, mineLocs) {
 
 	var element = -1;
 
-	return map(partial(map, function() {
+	return game.each(function() {
 			
 		element++;
 		
 		// If mineLocs says there should be a mine here, put one here.
-		if (mineLocs.indexOf(element) != -1) {
-				
-				return new Cell(true, element, game);
+		if (mineLocs.indexOf(element) != -1)
+			return new Cell(true, element, game);
 			
-			}
+		else
+			return new Cell(false, element, game);
 			
-			else {
-				
-				return new Cell(false, element, game);
-			
-			}
-	}), game.board);
+	});
 
 }

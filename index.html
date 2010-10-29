@@ -31,6 +31,7 @@
 			
 			td
 			{
+			padding:0px;
 			text-align:center;
 			width:40px;
 			height:40px;
@@ -49,45 +50,67 @@
 	
 		<script type="text/javascript">
 			
-			var width = prompt("Width?");
-			var height = prompt("Height?");
+			var width = prompt("Width?", "");
+			var height = prompt("Height?", "");
 			var game = new Game(width, height);
-			var mines = prompt("Number of mines?");
+			var mines = prompt("Number of mines?", "");
 			var mineLocs = mineLocGen(width * height, mines);
 			game.board = placeMines(game, mineLocs);
 			game.flip(game.cellAt(0, 0));
+			game.each(function(cell){game.flip(cell);return cell;});
 			
-			forEach(game.board, function(boardRow){
+			// We need to be able to go from
+			// the DOM to the internal board.
+			(function() {
+				
+				var rowCounter = -1;
+				var cellCounter = -1;
 			
-				$("game").insertRow();
-				forEach(boardRow, function(cell) {
+				forEach(game.board, function(boardRow){
 					
-					// insert prepends to lists, so first element is newest.
-					var currentRow = $("game").rows[0];
-					currentRow.insertCell();
-					var currentCell = currentRow.cells[0];
+					rowCounter++;
+					cellCounter = -1;
 					
-					if (!(cell.revealed)) {
-					
-						if (cell.flag) currentCell.className = "flag";
-						else currentCell.className = "hidden";
+					$("game").insertRow();
+					forEach(boardRow, function(cell) {
 						
-					}
-					else {
-					
-						if (cell.mine) currentCell.className = "mine";
+						cellCounter++;
+						
+						// In Netscape, insertRow/Cell prepend to the list, but
+						// in IE they append. Compensation provided.
+						var rowInsertionPoint = (ie ? $("game").rows.length - 1 : 0);
+						var currentRow = $("game").rows[rowInsertionPoint];
+						currentRow.insertCell();
+						
+						var cellInsertionPoint = (ie ? currentRow.cells.length - 1 : 0);
+						var currentCell = currentRow.cells[cellInsertionPoint];
+						
+						currentCell.id = rowCounter + " " + cellCounter;
+						
+						if (!(cell.revealed)) {
+						
+							if (cell.flag) currentCell.className = "flag";
+							else currentCell.className = "hidden";
+							
+						}
 						else {
 						
-							currentCell.className = "number";
-							currentCell.innerHTML = cell.nearbyMines();
+							if (cell.mine) currentCell.className = "mine";
+							else {
+							
+								currentCell.className = "number";
+								currentCell.innerHTML = cell.nearbyMines();
+								
+							}
 							
 						}
 						
-					}
+					});
 					
 				});
-				
-			});
+			
+			
+			})();
 			
 		</script>
 	

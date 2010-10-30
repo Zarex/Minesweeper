@@ -85,22 +85,53 @@
 						
 						currentCell.id = rowCounter + " " + cellCounter;
 						
-						if (!(cell.revealed)) {
-						
-							if (cell.flag) currentCell.className = "flag";
-							else currentCell.className = "hidden";
+						currentCell.onclick = function(event) {
 							
+							var coordinates = event.target.id.split(" ");
+							game.flip(game.cellAt(coordinates[0], coordinates[1]));
+							updateDOMCell(game.cellAt(coordinates[0], coordinates[1]));
+						
 						}
-						else {
 						
-							if (cell.mine) currentCell.className = "mine";
-							else {
+						updateDOMCell(currentCell);
+						
+						function updateDOMCell(cell) {
+						
+							if (!(cell.revealed)) {
 							
-								currentCell.className = "number";
-								currentCell.innerHTML = cell.nearbyMines();
+								if (cell.flag) {
+								
+									currentCell.className = "flag";
+									currentCell.innerHTML = "";
+									
+								}
+								
+								else {
+									
+									currentCell.className = "hidden";
+									currentCell.innerHTML = "";
+									
+								}
 								
 							}
+							else {
 							
+								if (cell.mine) {
+									
+									currentCell.className = "mine";
+									currentCell.innerHTML = "";
+									
+								}
+								
+								else {
+								
+									currentCell.className = "number";
+									currentCell.innerHTML = cell.nearbyMines();
+									
+								}
+								
+							}
+						
 						}
 						
 					});
